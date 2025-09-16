@@ -6,7 +6,7 @@ export default function Footer() {
       <span>ランクの対戦</span>
       <span className="hidden md:inline">•</span>
       <a
-        href="https://github.com/Zeldruck/rank-no-taisen"
+        href="https://github.com/zeldruck/rank-no-taisen-front"
         target="_blank"
         rel="noopener noreferrer"
         className="hover:text-indigo-600 transition-colors"
@@ -15,7 +15,7 @@ export default function Footer() {
       </a>
       <span className="hidden md:inline">•</span>
       <a
-        href="https://github.com/Zeldruck"
+        href="https://github.com/zeldruck"
         target="_blank"
         rel="noopener noreferrer"
         className="hover:text-indigo-600 transition-colors"
