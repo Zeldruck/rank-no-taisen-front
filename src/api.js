@@ -1,4 +1,4 @@
-const BASE_URL = import.meta.env.BACK_API_URL || 'http://localhost:4000/api';
+const BASE_URL = import.meta.env.VITE_BACK_API_URL || 'http://localhost:4000/api';
 
 export async function fetchItems(type, year) {
   const params = new URLSearchParams();
