@@ -11,10 +11,39 @@ export default function Home() {
   const [loadingMatches, setLoadingMatches] = useState(false); 
 
   useEffect(() => { 
-    fetchItems()
-      .then(data => setItems(data))
-      .finally(() => setLoading(false));
+    const loadItems = () => {
+      fetchItems()
+        .then(data => setItems(data))
+        .finally(() => setLoading(false));
+    };
+
+    loadItems();
+
+    const interval = setInterval(() => {
+      loadItems();
+    }, 3 * 60 * 1000);
+
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    if (items.length === 0 || matches.length === 0) return;
+
+    setMatches(prev =>
+      prev.map(match =>
+        match.map(it => items.find(updated => updated.id === it.id) || it)
+      )
+    );
+
+    setCurrentPair(prev =>
+      prev[0] && prev[1]
+        ? [
+            items.find(updated => updated.id === prev[0].id) || prev[0],
+            items.find(updated => updated.id === prev[1].id) || prev[1],
+          ]
+        : prev
+    );
+  }, [items]);
 
   const loadMatches = useCallback(async () => {
     if (loadingMatches) return;
@@ -50,7 +79,22 @@ export default function Home() {
     });
 
     try {
-      await postVote(votedPair[0].id, votedPair[1].id, winnerId);
+      const result = await postVote(votedPair[0].id, votedPair[1].id, winnerId);
+      setItems(prev =>
+        prev.map(it =>
+          it.id === result[0].id ? result[0] :
+          it.id === result[1].id ? result[1] : it
+        )
+      );
+
+      setMatches(prev =>
+        prev.map(match =>
+          match.map(it =>
+            it.id === result[0].id ? result[0] :
+            it.id === result[1].id ? result[1] : it
+          )
+        )
+      );
     } catch (err) {
       console.error('Erreur postVote:', err);
     }
