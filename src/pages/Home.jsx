@@ -45,25 +45,27 @@ export default function Home() {
     );
   }, [items]);
 
+  const loadingMatchesRef = useRef(false);
+
   const loadMatches = useCallback(async () => {
-    if (loadingMatches) return;
-    setLoadingMatches(true);
+    if (loadingMatchesRef.current) return;
+    loadingMatchesRef.current = true;
 
     try {
       const data = await fetchMatches();
       setMatches(prev => [...prev, ...data]);
-
       setCurrentPair(prev => prev[0] && prev[1] ? prev : data[0] || [null, null]);
     } catch (err) {
       console.error('Erreur fetchMatches:', err);
     } finally {
-      setLoadingMatches(false);
+      loadingMatchesRef.current = false;
     }
-  }, [loadingMatches]);
+  }, []);
 
   useEffect(() => {
     loadMatches();
-  }, [loadMatches]);
+  }, []);
+
 
   const handleVote = async (winnerId) => {
     if (!currentPair[0] || !currentPair[1]) return;
