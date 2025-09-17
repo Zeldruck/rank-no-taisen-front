@@ -79,20 +79,21 @@ export default function Home() {
     });
 
     try {
-      const result = await postVote(votedPair[0].id, votedPair[1].id, winnerId);
+      const updatedItemsFromServer = await postVote(votedPair[0].id, votedPair[1].id, winnerId);
+
       setItems(prev =>
-        prev.map(it =>
-          it.id === result[0].id ? result[0] :
-          it.id === result[1].id ? result[1] : it
-        )
+        prev.map(it => {
+          const updated = updatedItemsFromServer.find(u => u.id === it.id);
+          return updated ? { ...it, ...updated } : it;
+        })
       );
 
       setMatches(prev =>
         prev.map(match =>
-          match.map(it =>
-            it.id === result[0].id ? result[0] :
-            it.id === result[1].id ? result[1] : it
-          )
+          match.map(it => {
+            const updated = updatedItemsFromServer.find(u => u.id === it.id);
+            return updated ? { ...it, ...updated } : it;
+          })
         )
       );
     } catch (err) {
